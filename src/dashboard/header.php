@@ -1,4 +1,5 @@
 <?php 
+ob_start();
 session_start();
 
 // Block access if not logged in

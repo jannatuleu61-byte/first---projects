@@ -26,6 +26,7 @@
                                     <th>Author</th>
                                     <th>Description</th>
                                     <th>Genre</th>
+                                    <th>Copies</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -47,8 +48,9 @@
                                         <td><?php echo $book['author']; ?></td>
                                         <td><?php echo substr($book['description'], 0, 100); ?>...</td>
                                         <td><?php echo $book['genre']; ?></td>
+                                        <td><?php echo $book['copies']; ?></td>
                                         <td>
-                                            <a href="#" class="btn-edit">Edit</a>
+                                            <a href="edit-book.php?id=<?php echo $book['id']; ?>" class="btn-edit">Edit</a>
                                             <a href="../delete.php?tb=book&id=<?php echo $book['id'] ?>" class="btn-delete">Delete</a>
                                         </td>
                                     </tr>

@@ -1,119 +1,134 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Your custom CSS -->
-    <link rel="stylesheet" href="../../css/style.css">
-</head>
-<body>
+<?php 
+    require_once '../../header.php';
+
+    if (!isset($_GET['id'])) {
+        header("Location: view-books.php");
+        exit;
+    }
+
+    $id = intval($_GET['id']);
+    $sql = "SELECT * FROM books WHERE id = $id";
+    $result = mysqli_query($conn, $sql);
+    $book = mysqli_fetch_assoc($result);
+
+    if (!$book) {
+        echo "<div class='alert alert-danger'>Book not found!</div>";
+        exit;
+    }
+
+    if ($_SERVER["REQUEST_METHOD"] === "POST") {
+
+        $title = mysqli_real_escape_string($conn, trim($_POST['title']));
+        $author = mysqli_real_escape_string($conn, trim($_POST['author']));
+        $copies = intval($_POST['copies']);
+        $genre = mysqli_real_escape_string($conn, trim($_POST['genre']));
+        $description = mysqli_real_escape_string($conn, trim($_POST['description']));
+
+        // Handle cover upload
+        $coverPath = $book['cover']; // Default to current cover
+        if (isset($_FILES['cover']) && $_FILES['cover']['error'] === UPLOAD_ERR_OK) {
+            $uploadDir = "../../assets/covers/"; 
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+
+            $fileName = time() . "_" . basename($_FILES['cover']['name']);
+            $targetFile = $uploadDir . $fileName;
+
+            if (move_uploaded_file($_FILES['cover']['tmp_name'], $targetFile)) {
+                $coverPath = "assets/covers/" . $fileName; 
+            }
+        }
+
+        // Update DB
+        $sql_update = "UPDATE books SET 
+                        title = '$title', 
+                        author = '$author', 
+                        description = '$description', 
+                        copies = $copies, 
+                        genre = '$genre', 
+                        cover = '$coverPath' 
+                       WHERE id = $id";
+
+        if (mysqli_query($conn, $sql_update)) {
+            echo "<div class='alert alert-success'>✅ Book updated successfully!</div>";
+            header("Refresh:1; url=view-books.php");
+            // Refresh local book data
+            $book['title'] = $title;
+            $book['author'] = $author;
+            $book['copies'] = $copies;
+            $book['genre'] = $genre;
+            $book['description'] = $description;
+            $book['cover'] = $coverPath;
+        } else {
+            echo "<div class='alert alert-danger'>❌ Error: " . mysqli_error($conn) . "</div>";
+        }
+    }
+
+?>
 
     <div class="dashboard d-flex">
 
         <!-- Sidebar  -->
-        <aside class="dashboard-sidebar p-3">
-            <h2 class="dashboard-heading">
-                <a href="/" class="home-link" aria-label="Go to Home">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-house" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd" d="M8 3.293l6 6V13.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13.5V9.293l6-6zm5 6.414V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V9.707l5-5 5 5z"/>
-                    <path fill-rule="evenodd" d="M7.293 1.5a1 1 0 0 1 1.414 0l6 6a1 1 0 0 1-1.414 1.414L8 3.914 2.707 8.914A1 1 0 0 1 1.293 7.5l6-6z"/>
-                </svg>
-                </a>
-                Dashboard Menu
-            </h2>
+        <?php include '../../sidebar.php' ?>
 
-            <ul class="list-unstyled">
-                
-                <li>
-                    <span>Manage Books</span>
-                    <ul class="list-unstyled pl-3">
-                        <li class="active"><a href="create-book.html">Create Book</a></li>
-                        <li><a href="view-books.html">View Books</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <span>User Accounts</span>
-                    <ul class="list-unstyled pl-3">
-                        <li><a href="../users/create-user.html">Create User</a></li>
-                        <li><a href="../users/view-users.html">View Users</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <span>Student Accounts</span>
-                    <ul class="list-unstyled pl-3">
-                        <li><a href="../students/create-student.html">Create Student</a></li>
-                        <li><a href="../students/view-students.html">View Students</a></li>
-                    </ul>
-                </li>
-                
-            </ul>
-        </aside>
         <!-- Dashboard Main  -->
         <main class="dashboard-main flex-grow-1">
-            <div class="dashboard-main-nav">
-                <nav class="p-3">
-                    <ul class="d-flex justify-content-between align-items-center list-unstyled">
-                        <li>
-                            <a href="#" class="hamburger" aria-label="Open menu">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                    <rect y="4" width="24" height="2" rx="1" fill="currentColor"/>
-                                    <rect y="11" width="24" height="2" rx="1" fill="currentColor"/>
-                                    <rect y="18" width="24" height="2" rx="1" fill="currentColor"/>
-                                </svg>
-                            </a>
-                        </li>
-                        
-                        <li>
-                            <span style="display: flex; align-items: center;">
-                                <span style="margin-right: 10px; font-weight: 500;">John Doe</span>
-                                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Profile Picture" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
-                            </span>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
+            <!-- Nav  -->
+            <?php include '../../nav.php'; ?>
+
             <div class="dashboard-container p-3">
                 <h1>Edit Book</h1>
-                
 
                 <div class="row">
                     <div class="col-sm-12 col-md-8">
 
-                        <form>
+                        <form action="" method="POST" enctype="multipart/form-data">
                             <div class="form-group">
                                 <label for="bookTitle">Book Title</label>
-                                <input type="text" class="form-control" id="bookTitle" placeholder="Enter book title">
+                                <input type="text" class="form-control" id="bookTitle" name="title" value="<?php echo htmlspecialchars($book['title']); ?>" required>
                             </div>
                             <div class="form-group">
                                 <label for="bookAuthor">Author</label>
-                                <input type="text" class="form-control" id="bookAuthor" placeholder="Enter author name">
+                                <input type="text" class="form-control" id="bookAuthor" name="author" value="<?php echo htmlspecialchars($book['author']); ?>" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="copies">Copies</label>
+                                <input type="number" class="form-control" id="copies" name="copies" value="<?php echo $book['copies']; ?>" required>
                             </div>
                             <div class="form-group">
                                 <label for="bookGenre">Genre</label>
-                                <input type="text" class="form-control" id="bookGenre" placeholder="Enter book genre">
+                                <select name="genre" class="custom-select">
+                                    <option value="history" <?php if($book['genre'] == 'history') echo 'selected'; ?>>History</option>
+                                    <option value="fiction" <?php if($book['genre'] == 'fiction') echo 'selected'; ?>>Fiction</option>
+                                    <option value="non-fiction" <?php if($book['genre'] == 'non-fiction') echo 'selected'; ?>>Non-Fiction</option>
+                                    <option value="science" <?php if($book['genre'] == 'science') echo 'selected'; ?>>Science & Technology</option>
+                                    <option value="biography" <?php if($book['genre'] == 'biography') echo 'selected'; ?>>Biographies & Memoirs</option>
+                                    <option value="children" <?php if($book['genre'] == 'children') echo 'selected'; ?>>Children’s Books</option>
+                                </select>
                             </div>
                             <div class="form-group">
                                 <label for="bookDescription">Description</label>
-                                <textarea class="form-control" id="bookDescription" rows="3" placeholder="Enter book description"></textarea>
+                                <textarea class="form-control" id="bookDescription" rows="5" name="description" required><?php echo htmlspecialchars($book['description']); ?></textarea>
                             </div>
-                            <button type="submit" class="btn btn-primary">Save Changes</button>
+
+                            <div class="form-group">
+                                <label for="bookCover">Book Cover (Leave blank to keep current)</label>
+                                <div class="mb-2">
+                                    <img src="../../<?php echo $book['cover']; ?>" width="100" class="img-thumbnail" alt="">
+                                </div>
+                                <input type="file" class="form-control-file" id="bookCover" name="cover" accept="image/*">
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Update Book</button>
                         </form>
 
                     </div>
-
-                    <div class="col-sm-12 col-md-4"></div>
                 </div>
-
 
             </div>
         </main>
 
     </div>
 
-    <script src="./js/main.js"></script>
-
-</body>
-</html>
+<?php include '../../footer.php'; ?>

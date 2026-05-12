@@ -1,6 +1,7 @@
 body {
     /* font-family: Arial, sans-serif; */
-    background-color: #f6f1e7; /* parchment-like */
+    background-color: #f6f1e7;
+    /* parchment-like */
     color: #3e2c18;
 
     font-family: 'IM Fell English SC', 'Georgia', serif;
@@ -9,7 +10,9 @@ body {
     text-shadow: 1px 1px 0 #e0d6c3;
 }
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
     font-weight: bold;
     font-family: 'IM Fell English SC', 'Georgia', serif;
     letter-spacing: 1.5px;
@@ -58,8 +61,8 @@ h1, h2, h3 {
     border: 1px solid #e0d6c3;
 }
 
-.full-height{
-    min-height: calc( 100vh - 365px);
+.full-height {
+    min-height: calc(100vh - 365px);
 }
 
 /* Home Styles */
@@ -103,8 +106,9 @@ h1, h2, h3 {
     border-color: #8c6f4a;
 }
 
-.search-content input[type="button"] {
-    background-color: #8c6f4a;
+.search-content input[type="button"],
+.search-content input[type="submit"] {
+    background-color: #8c4a4a;
     color: #f6f1e7;
     border: none;
     padding: 10px 15px;
@@ -114,9 +118,10 @@ h1, h2, h3 {
     letter-spacing: 1px;
 }
 
-.search-content input[type="button"]:hover {
+.search-content input[type="button"]:hover,
+.search-content input[type="submit"]:hover {
+    background-color: #723c3c;
     box-shadow: 0 4px 20px rgba(140, 111, 74, 0.2);
-    background-color: #5b4321;
 }
 
 .title {
@@ -132,13 +137,13 @@ h1, h2, h3 {
 
 /* Literary Categories */
 
-.cat{
+.cat {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-.cat .cat-feature{
+.cat .cat-feature {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -173,7 +178,7 @@ h1, h2, h3 {
 
 /* Featured Volumes */
 
-.book{
+.book {
     display: flex;
     gap: 10px;
     margin-bottom: 20px;
@@ -304,7 +309,8 @@ h1, h2, h3 {
     text-align: left;
 }
 
-.login-label, .home-icon {
+.login-label,
+.home-icon {
     color: #8c6f4a;
     font-size: 1.1em;
     font-style: italic;
@@ -351,7 +357,7 @@ h1, h2, h3 {
     background-size: cover;
     background-blend-mode: multiply;
     border-radius: 0;
-    box-shadow: 0 4px 24px rgba(94,74,44,0.10);
+    box-shadow: 0 4px 24px rgba(94, 74, 44, 0.10);
     padding: 32px 16px;
     margin-bottom: 40px;
 }
@@ -359,7 +365,7 @@ h1, h2, h3 {
 .single-book .card {
     background-color: #f9f6ef;
     border: 1px solid #e0d6c3;
-    box-shadow: 0 2px 8px rgba(94,74,44,0.07);
+    box-shadow: 0 2px 8px rgba(94, 74, 44, 0.07);
 }
 
 .single-book .card-title {
@@ -392,5 +398,5 @@ h1, h2, h3 {
 .single-book .btn-custom:hover {
     background-color: #5b4321 !important;
     color: #f6f1e7 !important;
-    box-shadow: 0 4px 20px rgba(140,111,74,0.15);
+    box-shadow: 0 4px 20px rgba(140, 111, 74, 0.15);
 }

@@ -49,7 +49,7 @@
 
                 <!-- Profile Actions -->
                 <section class="profile-actions mt-4">
-                    <a href="#" class="btn-edit">Edit Profile</a>
+                    <a href="edit-profile.php" class="btn-edit">Edit Profile</a>
                     <a href="../logout.php" class="btn-delete">Log Out</a>
                 </section>
 

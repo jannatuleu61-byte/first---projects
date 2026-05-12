@@ -1,4 +1,5 @@
 <?php 
+ob_start();
 $currentPage = basename($_SERVER['PHP_SELF']);
 ?>
 

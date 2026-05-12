@@ -1,19 +1,17 @@
 <?php
-
     include "header.php";
-
+    include "../db/connect.php";
 ?>
-
 
     <main class="container mt-4">
 
         <div class="row">
             <div class="col-12">
                 <div class="search-wrapper">
-                    <div class="search-content">
-                        <input type="text" name="" id="">
-                        <input type="button" value="SEARCH">
-                    </div>
+                    <form action="catalog.php" method="GET" class="search-content">
+                        <input type="text" name="q" id="searchQuery" placeholder="Search for books..." value="<?php echo isset($_GET['q']) ? htmlspecialchars($_GET['q']) : ''; ?>">
+                        <input type="submit" value="SEARCH">
+                    </form>
                 </div>
             </div>
         </div>
@@ -26,124 +24,44 @@
                 <h2 class="title">Books to PICK</h2>
             </div>
 
-            <!-- Book Starts  -->
-            <div class="col-sm-12 col-md-12 col-lg-12">
-                <div class="book">
-                    <div class="book-feature">
-                        <img src="../assets/top-book-1.jpeg" alt="">
-                    </div>
-                    <div class="book-description">
-                        <a href="#" class="book-title">Project Gutenberg</a>
-                        <p class="book-short-details">A volunteer-driven digital library offering over 50,000 public domain titles, including classics from Shakespeare, Austen, and Twain—available for reading or download without registration or fees.</p>
-                        <div class="book-actions mt-2">
-                            <a href="#" class="btn btn-primary btn-sm mr-2">View Now</a>
-                            <a href="#" class="btn btn-success btn-sm">Pick Now</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <?php 
+                $search = isset($_GET['q']) ? mysqli_real_escape_string($conn, $_GET['q']) : '';
+                $sql = "SELECT * FROM books";
+                if (!empty($search)) {
+                    $sql .= " WHERE title LIKE '%$search%' OR author LIKE '%$search%' OR genre LIKE '%$search%'";
+                }
+                $sql .= " ORDER BY created_at DESC";
+                $result = $conn->query($sql);
 
+                if ($result->num_rows > 0) {
+                    while($row = $result->fetch_assoc()) {
+            ?>
             <!-- Book Starts  -->
             <div class="col-sm-12 col-md-12 col-lg-12">
                 <div class="book">
                     <div class="book-feature">
-                        <img src="../assets/top-book-2.jpeg" alt="">
+                        <img src="../dashboard/<?php echo $row['cover']; ?>" alt="<?php echo $row['title']; ?>">
                     </div>
                     <div class="book-description">
-                        <a href="#" class="book-title">To Kill a Mockingbird</a>
-                        <p class="book-short-details">Harper Lee’s Pulitzer Prize-winning novel explores themes of racial injustice and moral growth in the Deep South through the eyes of young Scout Finch.</p>
+                        <a href="single.php?id=<?php echo $row['id']; ?>" class="book-title"><?php echo $row['title']; ?></a>
+                        <p class="book-short-details"><?php echo substr($row['description'], 0, 200) . (strlen($row['description']) > 200 ? '...' : ''); ?></p>
                         <div class="book-actions mt-2">
-                            <a href="#" class="btn btn-primary btn-sm mr-2">View Now</a>
-                            <a href="#" class="btn btn-success btn-sm">Pick Now</a>
+                            <a href="single.php?id=<?php echo $row['id']; ?>" class="btn btn-primary btn-sm mr-2">View Now</a>
+                            <?php if ($row['copies'] > 0): ?>
+                                <a href="pick.php?id=<?php echo $row['id']; ?>" class="btn btn-success btn-sm">Pick Now</a>
+                            <?php else: ?>
+                                <button class="btn btn-secondary btn-sm" disabled>Out of Stock</button>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <!-- Book Starts  -->
-            <div class="col-sm-12 col-md-12 col-lg-12">
-                <div class="book">
-                    <div class="book-feature">
-                        <img src="../assets/top-book-3.jpg" alt="">
-                    </div>
-                    <div class="book-description">
-                        <a href="#" class="book-title">1984</a>
-                        <p class="book-short-details">George Orwell’s dystopian classic depicts a totalitarian society under constant surveillance, raising questions about freedom, truth, and individuality.</p>
-                        <div class="book-actions mt-2">
-                            <a href="#" class="btn btn-primary btn-sm mr-2">View Now</a>
-                            <a href="#" class="btn btn-success btn-sm">Pick Now</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Book Starts  -->
-            <div class="col-sm-12 col-md-12 col-lg-12">
-                <div class="book">
-                    <div class="book-feature">
-                        <img src="../assets/top-book-4.jpg" alt="">
-                    </div>
-                    <div class="book-description">
-                        <a href="#" class="book-title">The Great Gatsby</a>
-                        <p class="book-short-details">F. Scott Fitzgerald’s iconic novel captures the glamour and disillusionment of the Jazz Age, following Jay Gatsby’s pursuit of the American Dream.</p>
-                        <div class="book-actions mt-2">
-                            <a href="#" class="btn btn-primary btn-sm mr-2">View Now</a>
-                            <a href="#" class="btn btn-success btn-sm">Pick Now</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Book Starts  -->
-            <div class="col-sm-12 col-md-12 col-lg-12">
-                <div class="book">
-                    <div class="book-feature">
-                        <img src="../assets/top-book-5.jpg" alt="">
-                    </div>
-                    <div class="book-description">
-                        <a href="#" class="book-title">Pride and Prejudice</a>
-                        <p class="book-short-details">Jane Austen’s beloved novel explores issues of class, marriage, and character through the witty and independent Elizabeth Bennet.</p>
-                        <div class="book-actions mt-2">
-                            <a href="#" class="btn btn-primary btn-sm mr-2">View Now</a>
-                            <a href="#" class="btn btn-success btn-sm">Pick Now</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Book Starts  -->
-            <div class="col-sm-12 col-md-12 col-lg-12">
-                <div class="book">
-                    <div class="book-feature">
-                        <img src="../assets/top-book-6.jpg" alt="">
-                    </div>
-                    <div class="book-description">
-                        <a href="#" class="book-title">The Hobbit</a>
-                        <p class="book-short-details">J.R.R. Tolkien’s fantasy adventure follows Bilbo Baggins as he embarks on a quest filled with dragons, treasure, and unexpected heroism.</p>
-                        <div class="book-actions mt-2">
-                            <a href="#" class="btn btn-primary btn-sm mr-2">View Now</a>
-                            <a href="#" class="btn btn-success btn-sm">Pick Now</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Book Starts  -->
-            <div class="col-sm-12 col-md-12 col-lg-12">
-                <div class="book">
-                    <div class="book-feature">
-                        <img src="../assets/top-book-7.jpeg" alt="">
-                    </div>
-                    <div class="book-description">
-                        <a href="#" class="book-title">The Catcher in the Rye</a>
-                        <p class="book-short-details">J.D. Salinger’s classic novel follows Holden Caulfield’s journey through New York City as he grapples with alienation, identity, and the challenges of adolescence.</p>
-                        <div class="book-actions mt-2">
-                            <a href="#" class="btn btn-primary btn-sm mr-2">View Now</a>
-                            <a href="#" class="btn btn-success btn-sm">Pick Now</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <?php 
+                    }
+                } else {
+                    echo "<div class='col-12'><p>No books found.</p></div>";
+                }
+            ?>
 
         </div>
 

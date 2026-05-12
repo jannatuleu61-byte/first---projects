@@ -32,6 +32,12 @@
                 <li><a href="<?php echo $BASE_URL; ?>src/dashboard/pages/students/view-students.php">View Students</a></li>
             </ul>
         </li>
+        <li>
+            <span>Borrow History</span>
+            <ul class="list-unstyled pl-3">
+                <li><a href="<?php echo $BASE_URL; ?>src/dashboard/pages/borrows/view-borrows.php">Manage Borrows</a></li>
+            </ul>
+        </li>
         
     </ul>
 </aside>
